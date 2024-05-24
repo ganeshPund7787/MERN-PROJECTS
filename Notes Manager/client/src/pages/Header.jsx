@@ -64,7 +64,7 @@ const Header = () => {
               justifyContent={"space-evenly"}
             >
               <Button onClick={onClose} colorScheme={"purple"}>
-                <Link to={"/login"}>log in</Link>
+                <Link to={"/signin"}>sign in </Link>
               </Button>
               <Button
                 onClick={onClose}
