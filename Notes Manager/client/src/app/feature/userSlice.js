@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-    currentUser: localStorage.getItem("CurrentUser") ?
-        JSON.parse(localStorage.getItem("CurrentUser"))
+    currentUser: localStorage.getItem("currentUser") ?
+        JSON.parse(localStorage.getItem("currentUser"))
         : null
     ,
-    loading: false
+    loading: false,
+    isUpdate: false
 }
 
 const userSlice = createSlice({
@@ -17,16 +18,27 @@ const userSlice = createSlice({
         },
         fetchFail: (state, action) => {
             state.loading = false;
-            currentUser = null;
+            state.currentUser = null;
         },
         fetchSuccess: (state, action) => {
             state.loading = false;
             state.currentUser = action.payload;
-            localStorage.setItem("CurrentUser", JSON.stringify(action.payload));
+            localStorage.setItem("currentUser", JSON.stringify(action.payload));
+        },
+        deleteUser: (state, action) => {
+            state.currentUser = null;
+            localStorage.clear();
+        },
+        logoutUser: (state, action) => {
+            state.currentUser = null;
+            localStorage.clear();
+        },
+        toggleEdit: (state, action) => {
+            state.isUpdate = !state.isUpdate;
         }
     }
 });
 
-export const { fetchStart, fetchFail, fetchSuccess } = userSlice.actions;
+export const { fetchStart, fetchFail, fetchSuccess, deleteUser, logoutUser, toggleEdit } = userSlice.actions;
 
 export default userSlice.reducer;

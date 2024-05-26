@@ -1,5 +1,5 @@
 import express from "express";
-import { deleteUser, logout, signin, signup, updateUser } from "../controllers/user.controllers.js";
+import { deleteUser, googleAuth, logout, signin, signup, updateUser } from "../controllers/user.controllers.js";
 import { isAuthenticated } from "../middleware/Auth.js";
 
 const route = express.Router();
@@ -15,9 +15,5 @@ route
     .put(isAuthenticated, updateUser)
     .delete(isAuthenticated, deleteUser);
 
-route.get("/", isAuthenticated, (req, res) => {
-    res.json({
-        msg: "ok"
-    });
-});
+route.post("/googleAuth", googleAuth);
 export default route;

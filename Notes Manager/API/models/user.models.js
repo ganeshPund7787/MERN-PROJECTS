@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
 
     profileImage: {
         type: String,
-        default: ""
+        default: "https://img.freepik.com/premium-vector/businessman-avatar-illustration-cartoon-user-portrait-user-profile-icon_118339-5507.jpg"
     }
 }, { timestamps: true })
 

@@ -1,29 +1,31 @@
 import {
   Avatar,
+  Box,
   Button,
   Container,
   Heading,
   Input,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { fetchFail, fetchStart, fetchSuccess } from "../app/feature/userSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
 
 const Signup = () => {
   const [userData, setUserData] = useState();
-  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
+  const navigate = useNavigate();
   const onChaneSet = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
-    console.log(userData);
   };
 
   const onSubmitHandle = async (e) => {
     try {
-      dispatch(fetchStart());
+      setLoading(true);
       e.preventDefault();
       console.log(userData);
       const res = await fetch("/api/user/signup", {
@@ -36,10 +38,39 @@ const Signup = () => {
       const data = await res.json();
 
       if (data.success === false) {
+        setLoading(false);
+        toast({
+          title: data.message,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      if (data) {
+        setLoading(false);
+        toast({
+          title: data.message,
+          description: "We've created your account for you.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        navigate("/");
+        return;
       }
       console.log(data);
     } catch (error) {
+      setLoading(false);
       console.log(`Error While sign up fetch : ${error}`);
+      toast({
+        title: error.message,
+        description: "check your internet conection.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     }
   };
 
@@ -83,13 +114,18 @@ const Signup = () => {
           />
 
           <Button colorScheme="purple" type="submit">
-            sign Up
+            {loading ? "LOADING..." : "sign Up"}
           </Button>
+
+          <hr />
+          <Box>
+            <OAuth />
+          </Box>
 
           <Text textAlign={"right"}>
             Already sign Up ?{" "}
             <Button variant={"link"} colorScheme="purple">
-              <Link to={"/login"}>Login </Link>
+              <Link to={"/signin"}>Login </Link>
             </Button>
           </Text>
         </VStack>

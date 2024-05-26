@@ -25,6 +25,7 @@ export const signup = async (req, res, next) => {
     }
 }
 
+
 export const signin = async (req, res, next) => {
     try {
 
@@ -68,14 +69,15 @@ export const updateUser = async (req, res, next) => {
 
         const { id } = req.params;
 
-        const updatedUser = await User.findByIdAndUpdate(id, {
-            $set: {
-                username: req.body.username,
-                email: req.body.email,
-                password: req.body.password,
+        const updatedUser = await User.findByIdAndUpdate(id,
+            {
+                $set: {
+                    username: req.body.username,
+                    email: req.body.email,
+                    password: req.body.password,
 
-            }
-        });
+                }
+            }, { new: true });
         const { password, ...data } = updatedUser._doc;
 
         res.status(201).json(data)
@@ -99,6 +101,7 @@ export const logout = async (req, res, next) => {
     }
 }
 
+
 export const deleteUser = async (req, res, next) => {
     if (req.user.id !== req.params.id) {
         return next(errorHandler(404, "You can delete only your account"));
@@ -116,6 +119,44 @@ export const deleteUser = async (req, res, next) => {
 
     } catch (error) {
         console.log(`Error While deleting User :${error}`)
+        next();
+    }
+}
+
+
+export const googleAuth = async (req, res, next) => {
+    try {
+        const { username, email, profileImage } = req.body;
+
+        const isUserExist = await User.findOne({ email });
+
+        if (isUserExist) {
+            const cookie = jwt.sign({ _id: isUserExist._id }, process.env.JWT_SECREATE_KEY);
+
+            const { password, ...userData } = isUserExist._doc;
+            res.cookie("cookie", cookie, {
+                httpOnly: true,
+                maxAge: 15 * 24 * 60 * 60 * 10000
+            }).status(200).json(userData);
+            return;
+        }
+
+        const GeneratedPassword = Math.floor(Math.random() * 10000000 + 10000000).toString();
+        const hashPasword = bcryptjs.hashSync(GeneratedPassword, 10);
+
+        const newUser = await User.create({
+            username, email, profileImage, password: hashPasword
+        });
+
+        const cookie = jwt.sign({ _id: newUser._id }, process.env.JWT_SECREATE_KEY);
+
+        const { password, ...userData } = newUser._doc;
+        res.cookie("cookie", cookie, {
+            httpOnly: true,
+            maxAge: 15 * 24 * 60 * 60 * 10000
+        }).status(200).json(userData);
+    } catch (error) {
+        console.log(`Error While Google Auth : ${error}`)
         next();
     }
 }
