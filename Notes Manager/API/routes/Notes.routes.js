@@ -1,12 +1,12 @@
 import express from "express"
-import { deleteNotes, getAll, newNotes, toggleComplete, updateNotes } from "../controllers/notes.controller.js";
+import { deleteNotes, getAll, multipleDelete, newNotes, toggleComplete, updateNotes } from "../controllers/notes.controller.js";
 import { isAuthenticated } from "../middleware/Auth.js";
 
 const route = express.Router();
 
 route.post("/new", isAuthenticated, newNotes)
 
-route.get("/all", getAll);
+route.get("/all", isAuthenticated, getAll);
 
 route
     .route("/:id")
@@ -15,4 +15,5 @@ route
 
 route.put("/toggle/:id", toggleComplete);
 
+route.post("/deleteArr", multipleDelete)
 export default route;

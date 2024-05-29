@@ -9,7 +9,7 @@ const notesSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    isComplete: {
+    isDelete: {
         type: Boolean,
         default: false
     },
@@ -26,6 +26,11 @@ const notesSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
+    deleteArr: {
+        type: Array,
+        default: []
+    }
+
 }, { timestamps: true });
 
 export const Notes = new mongoose.model("Notes", notesSchema);

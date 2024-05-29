@@ -127,7 +127,7 @@ const Profile = () => {
     } catch (error) {
       console.log(`Error while logout user : ${error}`);
       toast({
-        title: data.message,
+        title: error.message,
         description: "check your internet conection.",
         status: "error",
         duration: 3000,
@@ -173,7 +173,6 @@ const Profile = () => {
         navigate("/profile");
         return;
       }
-      dispatch(toggleEdit());
     } catch (error) {
       console.log(`Error while updating User profile : ${error}`);
       toast({
@@ -185,6 +184,7 @@ const Profile = () => {
       });
     }
   };
+
   return (
     <Container maxW={"container.xl"} h={"120vh"} p={"10"}>
       {isUpdate ? (

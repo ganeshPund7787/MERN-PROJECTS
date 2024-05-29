@@ -6,7 +6,7 @@ const initialState = {
         : null
     ,
     loading: false,
-    isUpdate: false
+    isUpdate: false,
 }
 
 const userSlice = createSlice({
@@ -35,7 +35,8 @@ const userSlice = createSlice({
         },
         toggleEdit: (state, action) => {
             state.isUpdate = !state.isUpdate;
-        }
+        },
+
     }
 });
 

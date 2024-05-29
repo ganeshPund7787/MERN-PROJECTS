@@ -1,8 +1,14 @@
+import mongoose from "mongoose";
 import { Notes } from "../models/Notes.models.js";
+import { errorHandler } from "../utils/error.handler.js"
 
 export const newNotes = async (req, res, next) => {
     try {
         const { title, desc } = req.body;
+
+        if (title === "" || desc === "") {
+            return next(errorHandler(400, "You must write something"));
+        }
 
         const newNotes = new Notes({
             title, desc, user: req.user
@@ -43,12 +49,13 @@ export const updateNotes = async (req, res, next) => {
 
 export const getAll = async (req, res, next) => {
     try {
-        const AllNotes = await Notes.find();
+        const userId = req.user.id;
+        const AllNotes = await Notes.find({ user: userId });
 
         res.status(200).json(AllNotes)
 
     } catch (error) {
-        console.log(`Error While getAll User`)
+        console.log(`Error While getAll Notes : ${error}`)
         next();
     }
 }
@@ -72,18 +79,35 @@ export const toggleComplete = async (req, res, next) => {
     try {
         const { id } = req.params;
         const note = await Notes.findById(id);
-        console.log(note.isComplete)
 
-        note.isComplete = !note.isComplete;
+        note.isDelete = !note.isDelete;
 
         await note.save();
 
-        console.log(note.isComplete)
+
         res.status(200).json({
             success: true,
             message: "Task complete"
         })
     } catch (error) {
         console.log(`Error while toggle notes completed :B ${error}`);
+    }
+}
+
+export const multipleDelete = async (req, res, next) => {
+    try {
+        const { deleteArr } = req.body;
+        console.log(deleteArr)
+
+        if (!Array.isArray(deleteArr) || deleteArr.length === 0) {
+            return res.status(400).json({ message: 'Invalid request, array of ids required' });
+        }
+        const objectIds = deleteArr.map(id => new mongoose.Types.ObjectId(id));
+
+        await Notes.deleteMany({ _id: { $in: objectIds } });
+        res.status(200).json({ message: `${deleteArr.length} notes deleted` })
+
+    } catch (error) {
+        console.log(`Error while multipleDellete :  ${error}`)
     }
 }

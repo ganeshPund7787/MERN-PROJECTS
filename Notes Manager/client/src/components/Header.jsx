@@ -100,7 +100,7 @@ const Header = () => {
                       variant={"ghost"}
                       colorScheme="purple"
                     >
-                      <Link to={"/videos?category=free"}>
+                      <Link to={"/recyclebin"}>
                         <HStack>
                           <MdDelete /> <Text>Recycal bin</Text>
                         </HStack>
