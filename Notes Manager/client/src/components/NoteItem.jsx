@@ -60,9 +60,15 @@ const NoteItem = ({ note, refreshData, activeDelete }) => {
   };
 
   const handlePin = async () => {
-    const res = await fetch(`/api/notes/pin/${note._id}`, {
-      method: "put",
-    });
+    try {
+      const res = await fetch(`/api/notes/toggle/pin/${note._id}`, {
+        method: "put",
+      });
+      const data = await res.json();
+      refreshData();
+    } catch (error) {
+      console.log(`Error while toggle Pin`);
+    }
   };
 
   return (
@@ -73,7 +79,11 @@ const NoteItem = ({ note, refreshData, activeDelete }) => {
             <input onChange={selectHandle} type="checkbox" />
           ) : (
             <>
-              <MdOutlinePushPin onClick={handlePin} size={"24"} />
+              <MdOutlinePushPin
+                className={`${note.isPin ? "text-red-600" : null}`}
+                onClick={handlePin}
+                size={"24"}
+              />
               <Button onClick={onOpen}>
                 <FiEdit size={"20"} />
               </Button>

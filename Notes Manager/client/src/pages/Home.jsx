@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
+  CloseButton,
   Container,
   HStack,
   Heading,
@@ -10,6 +11,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
@@ -23,6 +25,7 @@ const Home = () => {
   const [data, setdata] = useState([]);
   const [isDeleteActive, setIsDeleteActive] = useState(false);
   const [query, setQuery] = useState("");
+  const [searchArr, setSearchArr] = useState("");
 
   const toast = useToast();
   const fetchNotes = async () => {
@@ -38,12 +41,12 @@ const Home = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    // if (query === "") return;
+    if (query.trim() === "") return;
     const res = await fetch(`/api/notes/search?title=${query}`, {
       method: "post",
     });
     const data = await res.json();
-    console.log(data);
+
     if (Array.from(data).length === 0) {
       toast({
         title: "not found",
@@ -54,11 +57,16 @@ const Home = () => {
       });
       return;
     }
+    setSearchArr(data);
   };
 
   useEffect(() => {
     fetchNotes();
   }, []);
+
+  useEffect(() => {
+    if (query === "") setSearchArr([]);
+  }, [query]);
 
   return (
     <Container maxH={"full"} maxW={"full"} w={"100vw"}>
@@ -111,21 +119,66 @@ const Home = () => {
         </HStack>
       </HStack>
 
-      <Container maxH={"full"} maxW={"full"} p={"2"}>
-        <HStack flexWrap={"wrap"} gap={"4"} justifyContent={"center"} p={"5"}>
-          {data?.map((i) => {
-            if (i.isDelete) return true;
-            return (
-              <NoteItem
-                key={i._id}
-                note={i}
-                refreshData={fetchNotes}
-                activeDelete={isDeleteActive}
-              />
-            );
-          })}
-        </HStack>
+      <Container maxH={"full"} maxW={"full"}>
+        <Container maxH={"full"} maxW={"full"}>
+          <HStack
+            flexWrap={"wrap"}
+            gap={"4"}
+            justifyContent={"space-evenly"}
+            p={"5"}
+          >
+            {data?.map((i) => {
+              if (i.isDelete === true || i.isPin === false) return true;
+              return (
+                <NoteItem
+                  key={i._id}
+                  note={i}
+                  refreshData={fetchNotes}
+                  activeDelete={isDeleteActive}
+                />
+              );
+            })}
+          </HStack>
+        </Container>
+
+        {searchArr.length === 0 || query === "" ? (
+          <Container maxH={"full"} maxW={"full"} p={"2"}>
+            <HStack
+              flexWrap={"wrap"}
+              gap={"4"}
+              p={"5"}
+              justifyContent={"space-evenly"}
+            >
+              {data?.map((i) => {
+                if (i.isDelete === true || i.isPin === true) return true;
+                return (
+                  <NoteItem
+                    key={i._id}
+                    note={i}
+                    refreshData={fetchNotes}
+                    activeDelete={isDeleteActive}
+                  />
+                );
+              })}
+            </HStack>
+          </Container>
+        ) : (
+          <Container>
+            {searchArr?.map((i) => {
+              if (i.isDelete) return true;
+              return (
+                <NoteItem
+                  key={i._id}
+                  note={i}
+                  refreshData={fetchNotes}
+                  activeDelete={isDeleteActive}
+                />
+              );
+            })}
+          </Container>
+        )}
       </Container>
+
       <Link to={"/addNote"}>
         <Button
           variant={"link"}

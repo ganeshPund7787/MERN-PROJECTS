@@ -86,6 +86,7 @@ export const toggleComplete = async (req, res, next) => {
         const { id } = req.params;
         const note = await Notes.findById(id);
 
+        note.isPin = !note.isPin
         note.isDelete = !note.isDelete;
         note.title = note.title
         await note.save();
@@ -121,12 +122,25 @@ export const multipleDelete = async (req, res, next) => {
 }
 
 export const togglePin = async (req, res, next) => {
-    try {
 
+    try {
+        const { id } = req.params;
+        const note = await Notes.findById(id);
+
+        note.isPin = !note.isPin;
+
+        await note.save();
+
+
+        res.status(200).json({
+            success: true,
+            message: "pin task"
+        })
     } catch (error) {
-        console.log(`Error while toggle PIn : ${error}`)
-        next(error);
+        console.log(`Error while toggle notes completed : ${error}`);
+        next(error)
     }
+
 }
 
 export const searchNote = async (req, res, next) => {
