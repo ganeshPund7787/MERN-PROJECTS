@@ -114,7 +114,7 @@ const Signup = () => {
           />
 
           <Button colorScheme="purple" type="submit">
-            {loading ? `LOADING...` : `SIGN UP`}
+            {loading ? `LOADING...` : `SIGN IN`}
           </Button>
 
           <hr />

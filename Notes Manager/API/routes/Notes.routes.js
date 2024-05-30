@@ -1,5 +1,5 @@
 import express from "express"
-import { deleteNotes, getAll, multipleDelete, newNotes, toggleComplete, updateNotes } from "../controllers/notes.controller.js";
+import { deleteNotes, getAll, multipleDelete, newNotes, searchNote, toggleComplete, updateNotes } from "../controllers/notes.controller.js";
 import { isAuthenticated } from "../middleware/Auth.js";
 
 const route = express.Router();
@@ -16,4 +16,6 @@ route
 route.put("/toggle/:id", toggleComplete);
 
 route.post("/deleteArr", multipleDelete)
+
+route.post('/search', isAuthenticated, searchNote);
 export default route;

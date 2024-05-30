@@ -3,10 +3,20 @@ import {
   Box,
   Button,
   Container,
+  FormControl,
+  FormLabel,
   HStack,
   Heading,
   Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Textarea,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { LuBellPlus } from "react-icons/lu";
@@ -17,7 +27,11 @@ const AddForm = () => {
   const [noteData, setNoteData] = useState("");
   const toast = useToast();
   const navigate = useNavigate();
-  // const { showToast } = useToastMsg(null);
+  const { showToast } = useToastMsg();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const initialRef = React.useRef(null);
+  const finalRef = React.useRef(null);
 
   const onChangeSetData = (e) => {
     setNoteData({ ...noteData, [e.target.name]: e.target.value });
@@ -40,38 +54,30 @@ const AddForm = () => {
       });
       const data = await res.json();
 
-      if (data.success === false) {
-        toast({
-          title: data.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-        return { showToast };
-      }
-
-      if (data) {
-        toast({
-          title: data.message,
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
-        navigate("/");
-        return;
-      }
+      showToast(data);
+      if (data.success === false) return;
+      navigate("/");
+      return;
     } catch (error) {
       console.log(`Error while add note in form : ${error}`);
+      showToast(error);
     }
   };
 
+  const handleReminder = () => {
+    console.log(`first`);
+  };
   return (
     <Container h={"100vh"} p={["4rem", "0rem"]} mt={"4rem"} w={"100vw"}>
       <form onSubmit={sendData}>
         <HStack justifyContent={"flex-end"}>
-          <LuBellPlus size={"20"} title="Add reminder" cursor={"pointer"} />
+          <LuBellPlus
+            onClick={onOpen}
+            size={"20"}
+            title="Add reminder"
+            cursor={"pointer"}
+          />
         </HStack>
-
         <Box my={"2rem"}>
           <Heading my={"1rem"}>Title :-</Heading>
           <Input
@@ -83,7 +89,6 @@ const AddForm = () => {
             onChange={onChangeSetData}
           />
         </Box>
-
         <Box>
           <Box fontSize={"1.5rem"} m={"2"}>
             Description:{" "}
@@ -95,7 +100,6 @@ const AddForm = () => {
             onChange={onChangeSetData}
           ></Textarea>
         </Box>
-
         <HStack justifyContent={"flex-end"} gap={"1rem"} mt={["3rem", "1rem"]}>
           <Button bgColor={"green"} type="submit">
             Done
@@ -107,6 +111,41 @@ const AddForm = () => {
           </Link>
         </HStack>
       </form>
+      <Modal
+        initialFocusRef={initialRef}
+        finalFocusRef={finalRef}
+        isOpen={isOpen}
+        onClose={onClose}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Set to remind</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <FormLabel>Remider Date: </FormLabel>
+              <Input
+                name="title"
+                ref={initialRef}
+                type="datetime-local"
+                placeholder="enter a reninder date..."
+              />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              onClick={handleReminder}
+              type="button"
+              colorScheme="blue"
+              mr={3}
+            >
+              Save
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Container>
   );
 };

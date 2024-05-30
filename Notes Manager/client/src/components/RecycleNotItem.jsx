@@ -12,9 +12,11 @@ import {
 import { setRecycleArr, unChecked } from "../app/feature/recycleSlice";
 import { FaTrashRestore } from "react-icons/fa";
 import { useDispatch } from "react-redux";
+import useToastMsg from "../Hooks/useToastMsg";
 
 const RecycleNotItem = ({ note, refreshData, Active }) => {
   const dispatch = useDispatch();
+  const { showToast } = useToastMsg();
 
   const restoreNotes = async () => {
     const res = await fetch(`/api/notes/toggle/${note._id}`, {
@@ -22,7 +24,7 @@ const RecycleNotItem = ({ note, refreshData, Active }) => {
     });
     const data = await res.json();
     refreshData();
-    console.log("data: ", data);
+    showToast(data);
   };
 
   return (

@@ -30,20 +30,25 @@ export const updateNotes = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const updatedNotes = await Notes.findByIdAndUpdate(id, {
-            $set: {
-                title: req.body.title,
-                desc: req.body.desc
-            }
-        }, { new: true });
+        const updatedNotes = await Notes.findById(id);
+
+        if (req.body.title) {
+            updatedNotes.title = req.body.title
+        }
+        if (req.body.desc) {
+            updatedNotes.desc = req.body.desc
+        }
+
+        await updatedNotes.save()
 
         res.status(201).json({
             success: true,
-            message: "User successfully update",
+            message: "note successfully update",
             updatedNotes
         })
     } catch (error) {
         console.log(`Error while update Notes : ${error}`)
+        next(error)
     }
 }
 
@@ -72,6 +77,7 @@ export const deleteNotes = async (req, res, next) => {
         })
     } catch (error) {
         console.log(`Error while delete notes : ${error}`)
+        next();
     }
 }
 
@@ -81,16 +87,17 @@ export const toggleComplete = async (req, res, next) => {
         const note = await Notes.findById(id);
 
         note.isDelete = !note.isDelete;
-
+        note.title = note.title
         await note.save();
 
 
         res.status(200).json({
             success: true,
-            message: "Task complete"
+            message: "select"
         })
     } catch (error) {
-        console.log(`Error while toggle notes completed :B ${error}`);
+        console.log(`Error while toggle notes completed : ${error}`);
+        next(error)
     }
 }
 
@@ -109,5 +116,29 @@ export const multipleDelete = async (req, res, next) => {
 
     } catch (error) {
         console.log(`Error while multipleDellete :  ${error}`)
+        next(error)
+    }
+}
+
+export const togglePin = async (req, res, next) => {
+    try {
+
+    } catch (error) {
+        console.log(`Error while toggle PIn : ${error}`)
+        next(error);
+    }
+}
+
+export const searchNote = async (req, res, next) => {
+
+    try {
+        const { title } = req.query;
+
+        const id = req.user._id;
+        const searchNotes = await Notes.find({ $and: [{ user: id }, { title }] });
+        res.status(200).json(searchNotes)
+    } catch (error) {
+        console.log(`Error while search Note : ${error}`)
+        next();
     }
 }

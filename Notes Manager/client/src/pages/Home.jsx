@@ -6,18 +6,25 @@ import {
   HStack,
   Heading,
   Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  useToast,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
-import { Select } from "@chakra-ui/react";
-import { IoAdd } from "react-icons/io5";
+
 import { Link } from "react-router-dom";
 import NoteItem from "../components/NoteItem";
 import { BiSolidSelectMultiple } from "react-icons/bi";
+import { IoIosAddCircleOutline } from "react-icons/io";
 
 const Home = () => {
   const [data, setdata] = useState([]);
   const [isDeleteActive, setIsDeleteActive] = useState(false);
+  const [query, setQuery] = useState("");
 
+  const toast = useToast();
   const fetchNotes = async () => {
     const res = await fetch("/api/notes/all");
     const data = await res.json();
@@ -25,19 +32,37 @@ const Home = () => {
   };
 
   const handleMultipleDelete = async () => {
-    const deleteArr = data.filter((note) => note.isDelete === true);
-    console.log("deleteArr : ", deleteArr);
-
     fetchNotes();
     setIsDeleteActive(!isDeleteActive);
+  };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    // if (query === "") return;
+    const res = await fetch(`/api/notes/search?title=${query}`, {
+      method: "post",
+    });
+    const data = await res.json();
+    console.log(data);
+    if (Array.from(data).length === 0) {
+      toast({
+        title: "not found",
+        description: "This note is not found. Please found the correct title",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      return;
+    }
   };
 
   useEffect(() => {
     fetchNotes();
   }, []);
+
   return (
     <Container maxH={"full"} maxW={"full"} w={"100vw"}>
-      <Heading color={"purple"} p={"3"} textAlign={"center"}>
+      <Heading color={"purple.500"} p={"2"} mt={"1rem"} textAlign={"center"}>
         MindMatrix
       </Heading>
 
@@ -47,25 +72,34 @@ const Home = () => {
         justifyContent={"space-between"}
         color={"white"}
       >
-        <HStack>
-          <Input
-            title="search notes title here.."
-            type="text"
-            placeholder={"find notes here...."}
-          />
-          <Button _hover={{ backgroundColor: "purple" }} type="submit">
-            search
-          </Button>
-        </HStack>
+        <form onSubmit={handleSearch}>
+          <HStack>
+            <Input
+              title="search notes title here.."
+              type="text"
+              placeholder={"find notes here...."}
+              value={query}
+              required
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <Button _hover={{ backgroundColor: "purple.500" }} type="submit">
+              search
+            </Button>
+          </HStack>
+        </form>
 
         <HStack gap={"3rem"}>
-          <Box>
-            <Select>
-              <option value="option1">List by modified</option>
-              <option value="option2">List by time of creation</option>
-            </Select>
-          </Box>
-          <Box bgColor={"purple"} p={"2"} rounded={"full"}>
+          <Menu>
+            <MenuButton as={Button}>Actions</MenuButton>
+            <MenuList>
+              <MenuItem>Download</MenuItem>
+              <MenuItem>Create a Copy</MenuItem>
+              <MenuItem>Mark as Draft</MenuItem>
+              <MenuItem>Delete</MenuItem>
+              <MenuItem>Attend a Workshop</MenuItem>
+            </MenuList>
+          </Menu>
+          <Box bgColor={"purple.500"} p={"2"} rounded={"full"}>
             {isDeleteActive ? (
               <MdDelete onClick={handleMultipleDelete} size={"20"} />
             ) : (
@@ -96,13 +130,13 @@ const Home = () => {
         <Button
           variant={"link"}
           rounded={"full"}
-          bgColor={"purple"}
+          bgColor={"purple.500"}
           pos={"fixed"}
           top={["90vh", "86vh"]}
           right={"12"}
           title="Add Notes"
         >
-          <IoAdd size={"3rem"} />
+          <IoIosAddCircleOutline size={"3rem"} />
         </Button>
       </Link>
     </Container>

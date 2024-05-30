@@ -4,11 +4,8 @@ import {
   Container,
   HStack,
   Heading,
-  Img,
   Input,
-  Text,
   VStack,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,14 +16,15 @@ import {
   fetchSuccess,
 } from "../app/feature/userSlice";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.jpg";
+import useToastMsg from "../Hooks/useToastMsg.js";
 
 const Profile = () => {
   const { currentUser, isUpdate } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
-  const toast = useToast();
+  const { showToast } = useToastMsg();
+
   const handleOnChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
@@ -51,36 +49,15 @@ const Profile = () => {
         method: "delete",
       });
       const data = await responce.json();
-      if (data.success === false) {
-        toast({
-          title: data.message,
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-        return;
-      }
 
-      if (data) {
-        toast({
-          title: data.message,
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-        dispatch(deleteUser());
-        navigate("/");
-        return;
-      }
+      showToast(data);
+      if (data.success === false) return;
+      dispatch(deleteUser());
+      navigate("/");
+      return;
     } catch (error) {
       console.log(`Error while delete user : ${error}`);
-      toast({
-        title: error.message,
-        description: "check your internet conection.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast(data);
     }
   };
 
@@ -148,40 +125,16 @@ const Profile = () => {
         body: JSON.stringify(userData),
       });
       const data = await res.json();
+      showToast(data);
+      if (data.success === false) return;
 
-      if (data.success === false) {
-        toast({
-          title: data.message,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-        return;
-      }
-
-      if (data) {
-        dispatch(fetchSuccess(data));
-        toast({
-          title: `User update successfully`,
-          description:
-            "Your all profile information are updated successfuly. on Update",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
-        dispatch(toggleEdit());
-        navigate("/profile");
-        return;
-      }
+      dispatch(fetchSuccess(data));
+      dispatch(toggleEdit());
+      navigate("/profile");
+      return;
     } catch (error) {
       console.log(`Error while updating User profile : ${error}`);
-      toast({
-        title: error.message,
-        description: "check your internet conection.",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
+      showToast(data);
     }
   };
 

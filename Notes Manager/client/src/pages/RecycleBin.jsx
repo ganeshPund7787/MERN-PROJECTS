@@ -1,14 +1,16 @@
-import { Button, Container, HStack, Heading } from "@chakra-ui/react";
+import { Box, Button, Container, HStack, Heading } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import RecycleNotItem from "../components/RecycleNotItem";
 import { BiSolidSelectMultiple } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
+import useToastMsg from "../Hooks/useToastMsg.js";
 
 const RecycleBin = () => {
   const [notes, setNotes] = useState([]);
   const [isDeleteActive, setIsDeleteActive] = useState(false);
   const { recycleArr } = useSelector((state) => state.recyle);
+  const { showToast } = useToastMsg();
 
   const getAllUser = async () => {
     try {
@@ -21,7 +23,6 @@ const RecycleBin = () => {
   };
 
   const handleMultipleDelete = async () => {
-    console.log(recycleArr);
     try {
       const res = await fetch("/api/notes/deleteArr", {
         method: "post",
@@ -34,10 +35,11 @@ const RecycleBin = () => {
       });
       const data = await res.json();
       getAllUser();
-      console.log(data);
+      showToast(data);
       setIsDeleteActive(!isDeleteActive);
     } catch (error) {
       console.log(`Error while delete multiple user: ${error}`);
+      showToast(error);
     }
   };
 
@@ -48,7 +50,13 @@ const RecycleBin = () => {
 
   return (
     <Container py={"65"} maxH={"full"} maxW={"full"} w={"100vw"}>
-      <Heading>Recycle Bin</Heading>
+      <Box
+        className="text-3xl text-indigo-500 text-bo"
+        fontSize={"2rem"}
+        textAlign={"center"}
+      >
+        Recycle Bin
+      </Box>
       <HStack m={"5"} justifyContent={"flex-end"}>
         {isDeleteActive ? (
           <MdDelete onClick={handleMultipleDelete} size={"20"} />
@@ -59,19 +67,23 @@ const RecycleBin = () => {
         )}
       </HStack>
       <HStack w={"100vw"} flexWrap={"wrap"} justifyContent={"center"} gap={"5"}>
-        {notes.map((note) => {
-          if (note.isDelete === false) {
-            return null;
-          }
-          return (
-            <RecycleNotItem
-              key={note._id}
-              note={note}
-              refreshData={getAllUser}
-              Active={isDeleteActive}
-            />
-          );
-        })}
+        {notes.length ? (
+          notes.map((note) => {
+            if (note.isDelete === false) {
+              return null;
+            }
+            return (
+              <RecycleNotItem
+                key={note._id}
+                note={note}
+                refreshData={getAllUser}
+                Active={isDeleteActive}
+              />
+            );
+          })
+        ) : (
+          <Heading>Emty</Heading>
+        )}
       </HStack>
     </Container>
   );

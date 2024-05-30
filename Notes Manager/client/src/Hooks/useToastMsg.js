@@ -5,23 +5,30 @@ const useToastMsg = () => {
 
     const showToast = (data) => {
         if (data.success === false) {
-            toast({
+            return toast({
                 title: data.message,
                 status: "error",
-                duration: 9000,
+                duration: 3000,
                 isClosable: true,
             });
-            return { showToast };
-        }
 
-        toast({
+        }
+        if (data.success) {
+            return toast({
+                title: data.message,
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
+        }
+        return toast({
             title: data.message,
-            status: "success",
-            duration: 9000,
+            status: "error",
+            duration: 3000,
             isClosable: true,
         });
-        return { showToast };
     }
+    return { showToast };
 }
 
 export default useToastMsg;
