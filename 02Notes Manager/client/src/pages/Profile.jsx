@@ -17,6 +17,7 @@ import {
 } from "../app/feature/userSlice";
 import { useNavigate } from "react-router-dom";
 import useToastMsg from "../Hooks/useToastMsg.js";
+import { useToast } from "@chakra-ui/react";
 
 const Profile = () => {
   const { currentUser, isUpdate } = useSelector((state) => state.user);
@@ -24,6 +25,7 @@ const Profile = () => {
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
   const { showToast } = useToastMsg();
+  const toast = useToast();
 
   const handleOnChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
