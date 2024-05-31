@@ -156,3 +156,13 @@ export const searchNote = async (req, res, next) => {
         next();
     }
 }
+
+
+export const sortByUpdatedAt = async (req, res, next) => {
+    try {
+        const sortNote = await Notes.find({ user: req.user._id }).sort({ updatedAt: -1 })
+        res.status(200).json(sortNote);
+    } catch (error) {
+        console.log(`Error while sortByUpdate : ${error}`)
+    }
+}

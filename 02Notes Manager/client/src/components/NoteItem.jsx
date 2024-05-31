@@ -22,7 +22,7 @@ import {
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
-import { MdOutlinePushPin } from "react-icons/md";
+import { MdOutlinePushPin, MdPushPin } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 import useNoteEdit from "../Hooks/useNoteEdit.js";
 import useToastMsg from "../Hooks/useToastMsg.js";
@@ -51,11 +51,18 @@ const NoteItem = ({ note, refreshData, activeDelete }) => {
 
   const handleChange = (e) => {
     setUpdateNote({ ...updateNote, [e.target.name]: e.target.value });
+    console.log(updateNote);
   };
 
   const sendHookData = () => {
+    if (updateNote.desc) {
+      if (updateNote.desc.trim() === "") return;
+    }
+
+    if (updateNote.title === "") return;
     onClose();
     const data = editNote(updateNote);
+    refreshData();
     refreshData();
   };
 
@@ -79,11 +86,20 @@ const NoteItem = ({ note, refreshData, activeDelete }) => {
             <input onChange={selectHandle} type="checkbox" />
           ) : (
             <>
-              <MdOutlinePushPin
-                className={`${note.isPin ? "text-red-600" : null}`}
-                onClick={handlePin}
-                size={"24"}
-              />
+              {note.isPin ? (
+                <MdPushPin
+                  className="cursor-pointer"
+                  onClick={handlePin}
+                  color="red"
+                  size={"24"}
+                />
+              ) : (
+                <MdOutlinePushPin
+                  className="cursor-pointer"
+                  onClick={handlePin}
+                  size={"24"}
+                />
+              )}
               <Button onClick={onOpen}>
                 <FiEdit size={"20"} />
               </Button>

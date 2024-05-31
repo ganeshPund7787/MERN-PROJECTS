@@ -17,7 +17,6 @@ import {
   ModalOverlay,
   Textarea,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import { LuBellPlus } from "react-icons/lu";
 import { Link, useNavigate } from "react-router-dom";
@@ -25,7 +24,7 @@ import useToastMsg from "../Hooks/useToastMsg.js";
 
 const AddForm = () => {
   const [noteData, setNoteData] = useState("");
-  const toast = useToast();
+
   const navigate = useNavigate();
   const { showToast } = useToastMsg();
 
@@ -66,6 +65,10 @@ const AddForm = () => {
 
   const handleReminder = () => {
     console.log(`first`);
+    setTimeout(() => {
+      console.log(`Working all corect`);
+    }, 5000);
+    onClose();
   };
   return (
     <Container h={"100vh"} p={["4rem", "0rem"]} mt={"4rem"} w={"100vw"}>

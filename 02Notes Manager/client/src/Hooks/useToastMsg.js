@@ -21,6 +21,7 @@ const useToastMsg = () => {
                 isClosable: true,
             });
         }
+
         return toast({
             title: data.message,
             status: "error",

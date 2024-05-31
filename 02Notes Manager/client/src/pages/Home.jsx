@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
-  CloseButton,
   Container,
   HStack,
   Heading,
@@ -11,7 +10,6 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
@@ -60,6 +58,16 @@ const Home = () => {
     setSearchArr(data);
   };
 
+  const sortByUpdate = async () => {
+    try {
+      const responce = await fetch(`/api/notes/sortByUpdate`);
+      const data = await responce.json();
+      setdata(data);
+    } catch (error) {
+      console.log(`Error while sortBy Updated  : ${error}`);
+    }
+  };
+
   useEffect(() => {
     fetchNotes();
   }, []);
@@ -98,13 +106,10 @@ const Home = () => {
 
         <HStack gap={"3rem"}>
           <Menu>
-            <MenuButton as={Button}>Actions</MenuButton>
+            <MenuButton as={Button}>sort by</MenuButton>
             <MenuList>
-              <MenuItem>Download</MenuItem>
-              <MenuItem>Create a Copy</MenuItem>
-              <MenuItem>Mark as Draft</MenuItem>
-              <MenuItem>Delete</MenuItem>
-              <MenuItem>Attend a Workshop</MenuItem>
+              <MenuItem onClick={() => fetchNotes()}>created at</MenuItem>
+              <MenuItem onClick={sortByUpdate}>updated at</MenuItem>
             </MenuList>
           </Menu>
           <Box bgColor={"purple.500"} p={"2"} rounded={"full"}>
