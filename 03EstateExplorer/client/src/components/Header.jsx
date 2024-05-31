@@ -9,7 +9,7 @@ const Header = () => {
           <span className="text-slate-700">estate</span>
           <span className="text-slate-500">Explorer</span>
         </h1>
-        <form className="bg-slate-100 p-3 rounded-lg flex items-center">
+        <form className="bg-slate-100 p-2 rounded-lg flex items-center">
           <input
             type="text"
             placeholder="search..."
