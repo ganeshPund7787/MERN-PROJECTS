@@ -7,7 +7,7 @@ import authRouter from "./routes/auth.route.js"
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log(`MongoDb connected `))
-    .catch(() => console.log(`Error while mongoDB : ${console.error()}`))
+    .catch((error) => console.log(`Error while mongoDB : ${error}`))
 
 const app = express();
 app.use(express.json())
