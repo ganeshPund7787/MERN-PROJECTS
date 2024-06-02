@@ -4,12 +4,14 @@ import dotenv from "dotenv"
 dotenv.config();
 import userRouter from "./routes/user.routes.js"
 import authRouter from "./routes/auth.route.js"
+import cookieParser from "cookie-parser";
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log(`MongoDb connected `))
     .catch((error) => console.log(`Error while mongoDB : ${error}`))
 
 const app = express();
+app.use(cookieParser())
 app.use(express.json())
 
 app.listen(3000, () => {
