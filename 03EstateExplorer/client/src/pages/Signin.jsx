@@ -6,6 +6,7 @@ import {
   signInStart,
   signInSuccess,
 } from "../app/features/userSlice";
+import OAuth from "../components/OAuth";
 
 const Signin = () => {
   const [formData, setFormData] = useState(null);
@@ -68,6 +69,8 @@ const Signin = () => {
         >
           {loading ? "LOADING..." : "Sign In"}
         </button>
+      <hr />
+        <OAuth />
       </form>
       <div className="flex gap-2 mt-5">
         <p>Dont Have an Account ?</p>

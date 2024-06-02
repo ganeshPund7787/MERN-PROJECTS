@@ -46,3 +46,44 @@ export const signIn = async (req, res, next) => {
         next(error);
     }
 }
+
+export const GoogleAuth = async (req, res, next) => {
+    try {
+
+        const validUser = await User.findOne({ email: req.body.email });
+
+        if (validUser) {
+            const cookie = jwt.sign({ _id: validUser._id }, process.env.JWT_TOKEN);
+            const { password, ...rest } = validUser._doc;
+
+            return res.status(200).cookie("cookie", cookie, {
+                httpOnly: true,
+                maxAge: 15 * 24 * 60 * 60 * 1000
+            }).status(200).json(rest)
+
+        }
+
+        const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
+
+        const hashPassword = bcryptjs.hashSync(generatedPassword, 10);
+
+        const newUser = await User.create({
+            username: req.body.username.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-4),
+            email: req.body.email,
+            password: hashPassword,
+            profileImg: req.body.profileImg
+        });
+
+        const cookie = jwt.sign({ _id: newUser._id }, process.env.JWT_TOKEN);
+
+        const { password, ...rest } = newUser._doc;
+
+        res.status(202).cookie("cookie", cookie, {
+            httpOnly: true,
+            maxAge: 15 * 24 * 60 * 60 * 1000
+        }).status(200).json(rest)
+    } catch (error) {
+        console.log(`Error while google Auth in Backend : ${error}`)
+        next(error);
+    }
+}
