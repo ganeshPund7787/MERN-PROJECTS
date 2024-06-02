@@ -2,7 +2,7 @@ import React from "react";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { app } from "../firebase.js";
 import { useDispatch } from "react-redux";
-import { signInSuccess } from "../app/features/userSlice.js";
+import { fetchSuccess } from "../app/features/userSlice.js";
 import { useNavigate } from "react-router-dom";
 
 const OAuth = () => {
@@ -27,7 +27,7 @@ const OAuth = () => {
         }),
       });
       const data = await res.json();
-      dispatch(signInSuccess(data));
+      dispatch(fetchSuccess(data));
       navigate("/");
     } catch (error) {
       console.log(`error while google auth  :${error}`);
@@ -37,7 +37,7 @@ const OAuth = () => {
     <button
       type="button"
       onClick={handleGoogleClick}
-      className="bg-green-700 text-white p-3 rounded-lg uppercase hover:bg-green-500"
+      className="bg-green-700 text-white p-2 rounded-lg uppercase hover:bg-green-500"
     >
       Contiinue with google
     </button>

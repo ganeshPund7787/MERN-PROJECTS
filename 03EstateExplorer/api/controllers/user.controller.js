@@ -8,6 +8,8 @@ export const test = (req, res) => {
 
 
 export const updateUser = async (req, res, next) => {
+
+
     if (req.user._id !== req.params.id) {
         return next(errorHandler(401, "You can update only your account"))
     }
@@ -36,6 +38,34 @@ export const updateUser = async (req, res, next) => {
         const { password, ...userData } = updateUser._doc;
 
         res.status(200).json(userData);
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const deleteUser = async (req, res, next) => {
+    if (req.user._id !== req.params.id) {
+        return next(errorHandler(401, "You can delete only your account"))
+    }
+    try {
+        const { id } = req.params;
+
+        await User.findByIdAndDelete(id);
+
+        res.clearCookie("cookie").status(200).json({
+            message: "User deleted"
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const logoutUser = async (req, res, next) => {
+    try {
+        res.clearCookie("cookie").status(200).json({
+            message: "User logout"
+        })
     } catch (error) {
         next(error);
     }

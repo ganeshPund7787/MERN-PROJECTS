@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { useRef } from "react";
 import {
   getDownloadURL,
@@ -9,15 +8,28 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+import {
+  updateToggle,
+  fetchSuccess,
+  deleteUser,
+  fetchInStart,
+  fetchFailure,
+  logoutUser,
+} from "../app/features/userSlice";
+import useToast from "../Hooks/useToast.js";
+import toast from "react-hot-toast";
 
 const Profile = () => {
-  const { currentUser, isEditable } = useSelector((state) => state.user);
+  const { currentUser, isEditable, loading } = useSelector(
+    (state) => state.user
+  );
   const dispatch = useDispatch();
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [filePer, setFilePer] = useState(0);
   const [uploadFileError, setUploadFileError] = useState(false);
   const [formData, setFormData] = useState({});
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (file) {
@@ -49,93 +61,219 @@ const Profile = () => {
     );
   };
 
-  const handleLogout = () => {};
-  const handleDelete = () => {};
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    console.log(formData);
+  };
+
+  const handleUpdateClick = async (e) => {
+    try {
+      e.preventDefault();
+      dispatch(fetchInStart());
+      const res = await fetch(`/api/user/${currentUser._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(fetchFailure());
+        return;
+      }
+      dispatch(fetchSuccess(data));
+      dispatch(updateToggle());
+    } catch (error) {
+      console.log(`Error while upadate: ${error}`);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch(`/api/user/logout`);
+      const data = await res.json();
+      if (data.success === false) return;
+      dispatch(logoutUser());
+    } catch (error) {
+      console.log(`Error while logout: ${error}`);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const confirmUser = confirm(
+        "Are you sure you want to delete your account ? "
+      );
+      if (!confirmUser) return;
+      const res = await fetch(`/api/user/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      dispatch(deleteUser());
+      console.log(data);
+    } catch (error) {
+      console.log(`Error while delete user : ${error}`);
+    }
+  };
   return (
-    <div className=" flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6">
-          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <input
-              onChange={(e) => setFile(e.target.files[0])}
-              accept="image/*"
-              hidden
-              type="file"
-              ref={fileRef}
-            />
-            <img
-              onClick={() => fileRef.current.click()}
-              className="mx-auto h-24 w-auto rounded-full"
-              src={formData.profileImg || currentUser.profileImg}
-              alt="Your Company"
-              title="logo"
-            />
-            <p className="text-center font-bold">
-              {uploadFileError ? (
-                <span className="text-red-700">
-                  Error Image Upload(Image must be less than 2mb)
-                </span>
-              ) : filePer > 0 && filePer < 100 ? (
-                <span className="text-slate-700">{`Uploading ${filePer}%`}</span>
-              ) : filePer === 100 ? (
-                <span className="text-green-700">
-                  Image SuccessFully Uploaded
-                </span>
-              ) : (
-                ""
-              )}
-            </p>
-          </div>
-          <div>
-            <div className="mt-2">
-              <input
-                id="email"
-                name="username"
-                type="text"
-                defaultValue={currentUser.username}
-                readOnly
-                autoComplete="email"
-                className="block w-full rounded-md border-0 py-2 px-2 text-gray-900
+    <>
+      {isEditable ? (
+        <div className=" fontFamily: Lora, serif, flex-col justify-center px-6 py-12 lg:px-8">
+          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <form>
+              <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                <input
+                  onChange={(e) => setFile(e.target.files[0])}
+                  accept="image/*"
+                  hidden
+                  type="file"
+                  ref={fileRef}
+                />
+                <img
+                  onClick={() => fileRef.current.click()}
+                  className="mx-auto h-24 w-24 object-cover rounded-full"
+                  src={currentUser.profileImg}
+                  alt="Your Company"
+                  title="logo"
+                />
+                <p className="text-center font-bold">
+                  {uploadFileError ? (
+                    <span className="text-red-700">
+                      Error Image Upload(Image must be less than 2mb)
+                    </span>
+                  ) : filePer > 0 && filePer < 100 ? (
+                    <span className="text-slate-700">{`Uploading ${filePer}%`}</span>
+                  ) : filePer === 100 ? (
+                    <span className="text-green-700">
+                      Image SuccessFully Uploaded
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </p>
+              </div>
+              <div>
+                <div className="mt-2">
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    defaultValue={currentUser.username}
+                    autoComplete="email"
+                    onChange={handleChange}
+                    className="block w-full rounded-md border-0 py-2 px-2 text-gray-900
                  shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 
                  outline-none "
-              />
-            </div>
-          </div>
-          <div>
-            <div className="mt-2">
-              <input
-                id="password"
-                name="email"
-                defaultValue={currentUser.email}
-                readOnly
-                type="email"
-                className="block w-full rounded-md border-0 py-2 px-2 text-gray-900
+                  />
+                </div>
+              </div>
+
+              <div className="mt-2">
+                <input
+                  id="password"
+                  name="email"
+                  onChange={handleChange}
+                  defaultValue={currentUser.email}
+                  type="email"
+                  className="block w-full rounded-md border-0 py-2 px-2 text-gray-900
                  shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 
                  outline-none"
-              />
+                />
+              </div>
+
+              <div>
+                <button
+                  onClick={handleUpdateClick}
+                  type="button"
+                  disabled={loading}
+                  className="flex disabled:cursor-not-allowed my-5 w-full md:text-lg justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  {loading ? "LOADING..." : "save"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => dispatch(updateToggle())}
+                  className="flex w-full md:text-lg justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  cancle
+                </button>
+              </div>
+            </form>
+            <div
+              className={`mt-6 text-red-600 flex justify-between ${
+                currentUser ? "flex" : "hidden"
+              }`}
+            ></div>
+          </div>
+        </div>
+      ) : (
+        <div className=" flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <form className="space-y-6">
+              <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                <img
+                  className="mx-auto h-24 w-24 object-cover rounded-full"
+                  src={currentUser.profileImg}
+                  alt="Your Company"
+                  title="logo"
+                />
+              </div>
+              <div>
+                <div className="mt-2">
+                  <input
+                    id="email"
+                    name="username"
+                    type="text"
+                    defaultValue={currentUser.username}
+                    readOnly
+                    className="block w-full rounded-md border-0 py-2 px-2 text-gray-900
+                 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 
+                 outline-none "
+                  />
+                </div>
+              </div>
+              <div>
+                <div className="mt-2">
+                  <input
+                    name="email"
+                    defaultValue={currentUser.email}
+                    readOnly
+                    type="email"
+                    className="block w-full rounded-md border-0 py-2 px-2 text-gray-900
+                 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 
+                 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  onClick={() => dispatch(updateToggle())}
+                  className="disabled:bg-indigo-400 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Edit Profile
+                </button>
+              </div>
+            </form>
+            <div
+              className={`mt-6 text-red-600 flex justify-between ${
+                currentUser ? "flex" : "hidden"
+              }`}
+            >
+              <button type="button" onClick={handleDelete}>
+                delete Profile
+              </button>
+              <button type="button" onClick={handleLogout}>
+                Log out
+              </button>
             </div>
           </div>
-
-          <div>
-            <button
-              type="submit"
-              // onClick={handleClick}
-              className="disabled:bg-indigo-400 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Edit Profile
-            </button>
-          </div>
-        </form>
-        <div
-          className={`mt-6 text-red-600 flex justify-between ${
-            currentUser ? "flex" : "hidden"
-          }`}
-        >
-          <button onClick={handleDelete}>delete Profile</button>
-          <button onClick={handleLogout}>Log out</button>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

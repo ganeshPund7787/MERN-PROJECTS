@@ -6,7 +6,7 @@ import userRouter from "./routes/user.routes.js"
 import authRouter from "./routes/auth.route.js"
 import cookieParser from "cookie-parser";
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, { dbName: "estateExplorer" })
     .then(() => console.log(`MongoDb connected `))
     .catch((error) => console.log(`Error while mongoDB : ${error}`))
 

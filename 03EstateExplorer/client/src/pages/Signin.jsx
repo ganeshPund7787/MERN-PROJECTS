@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  signInFailure,
-  signInStart,
-  signInSuccess,
+  fetchFailure,
+  fetchInStart,
+  fetchSuccess,
 } from "../app/features/userSlice";
 import OAuth from "../components/OAuth";
 
@@ -22,7 +22,7 @@ const Signin = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      dispatch(signInStart());
+      dispatch(fetchInStart());
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -33,14 +33,14 @@ const Signin = () => {
       const data = await res.json();
       console.log(data);
       if (data.success === false) {
-        dispatch(signInFailure(data.message));
+        dispatch(fetchFailure(data.message));
         return;
       }
-      dispatch(signInSuccess(data));
+      dispatch(fetchSuccess(data));
       navigate("/");
       return;
     } catch (error) {
-      dispatch(signInFailure(error.message));
+      dispatch(fetchFailure(error.message));
       console.log(`Error while sign up : ${error}`);
     }
   };
@@ -65,11 +65,11 @@ const Signin = () => {
         <button
           disabled={loading}
           type="submit"
-          className="bg-orange-500 disabled:cursor-not-allowed text-white p-3 rounded-lg uppercase hover:bg-orange-400 disabled:opacity-80"
+          className="bg-orange-500 disabled:cursor-not-allowed text-white p-2 rounded-lg uppercase hover:bg-orange-400 disabled:opacity-80"
         >
           {loading ? "LOADING..." : "Sign In"}
         </button>
-      <hr />
+        <hr />
         <OAuth />
       </form>
       <div className="flex gap-2 mt-5">
