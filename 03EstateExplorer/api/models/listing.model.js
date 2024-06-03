@@ -19,7 +19,7 @@ const listingSchema = new mongoose.Schema({
     },
     descountPrice: {
         type: Number,
-        required: true
+        default: 0
     },
     batherooms: {
         type: Number,
@@ -56,7 +56,7 @@ const listingSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        // required: true
     }
 }, { timestamps: true })
 
