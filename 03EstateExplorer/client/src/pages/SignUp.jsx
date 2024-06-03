@@ -44,6 +44,7 @@ const SignUp = () => {
       <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 ">
         <input
+          autoFocus
           type="text"
           placeholder="username"
           className="border p-2 rounded-lg"
