@@ -17,6 +17,7 @@ import {
   logoutUser,
 } from "../app/features/userSlice";
 import useToast from "../Hooks/useToast.js";
+import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Profile = () => {
@@ -258,6 +259,15 @@ const Profile = () => {
                 </button>
               </div>
             </form>
+            <div>
+              <Link
+                to={"/create-listing"}
+                type="submit"
+                className="disabled:bg-cyan-400 my-5 flex w-full justify-center rounded-md bg-cyan-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+              >
+                create listing
+              </Link>
+            </div>
             <div
               className={`mt-6 text-red-600 flex justify-between ${
                 currentUser ? "flex" : "hidden"
