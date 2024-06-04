@@ -31,6 +31,8 @@ const Profile = () => {
   const [uploadFileError, setUploadFileError] = useState(false);
   const [formData, setFormData] = useState({});
   const { showToast } = useToast();
+  const [showListingError, setShowListngError] = useState(false);
+  const [userListing, setUserListing] = useState([]);
 
   useEffect(() => {
     if (file) {
@@ -117,6 +119,24 @@ const Profile = () => {
       console.log(`Error while delete user : ${error}`);
     }
   };
+
+  const handleListing = async () => {
+    try {
+      setShowListngError(false);
+      const res = await fetch(`/api/user/listing/${currentUser._id}`);
+      const data = await res.json();
+
+      if (data.success === false) {
+        setShowListngError(true);
+        return;
+      }
+      setUserListing(data);
+    } catch (error) {
+      console.log(`Error while listing : ${error}`);
+      setShowListngError(true);
+    }
+  };
+
   return (
     <>
       {isEditable ? (
@@ -210,7 +230,7 @@ const Profile = () => {
           </div>
         </div>
       ) : (
-        <div className=" flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="font-bold flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form className="space-y-6">
               <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -281,6 +301,53 @@ const Profile = () => {
               </button>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={handleListing}
+            className="text-green-600 hover:shadow-lg w-full"
+          >
+            Show listing
+          </button>
+          <p className="text-red-600 m-5">
+            {showListingError ? `Error Showing Listing...` : ""}
+          </p>
+
+          {userListing && userListing.length > 0 && (
+            <div className="flex flex-col gap-4">
+              <h1 className="text-center mt-7 text-2xl font-semibold">
+                Your Listing
+              </h1>
+              {userListing.map((listing) => (
+                <div
+                  className="border gap-4 rounded-lg p-2 flex justify-between items-center"
+                  key={listing._id}
+                >
+                  <Link to={`/listing/${listing._id}`} key={listing._id}>
+                    <img
+                      className="h-16 w-16 object-contain"
+                      src={listing.imageUrls[0]}
+                      alt="listing img.."
+                    />
+                  </Link>
+                  <Link
+                    className="text-slate-700 font-semibold flex-1 hover:underline truncate"
+                    to={`/listing/${listing._id}`}
+                  >
+                    <p>{listing.name}</p>
+                  </Link>
+
+                  <div className="flex flex-col items-center">
+                    <button className="text-red-700 uppercase" type="button">
+                      Delete
+                    </button>
+                    <button className="text-green-700 uppercase" type="button">
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </>
