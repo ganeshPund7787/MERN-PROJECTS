@@ -7,7 +7,7 @@ import {
 } from "firebase/storage";
 import { app } from "../firebase.js";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CreateListing = () => {
   const [files, setFiles] = useState([]);
@@ -382,10 +382,18 @@ const CreateListing = () => {
 
             <button
               disabled={uploading || loading}
-              className="p-3 bg-orange-500 text-white rounded-lg uppercase hover:bg-orange-300 disabled:cursor-not-allowed"
+              className="p-2 bg-orange-500 text-white rounded-lg uppercase hover:bg-orange-300 disabled:cursor-not-allowed"
             >
               {loading ? "Creating...." : `Create listing`}
             </button>
+            <Link className="flex" to={"/profile"}>
+              <button
+                disabled={uploading || loading}
+                className="p-2 bg-red-600 text-white w-full rounded-lg uppercase hover:bg-red-300 disabled:cursor-not-allowed"
+              >
+                Cancle
+              </button>
+            </Link>
             {error && <p className="text-red-700">{error}</p>}
           </div>
         </div>
