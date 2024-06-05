@@ -49,7 +49,7 @@ const Listing = () => {
     fetchListing();
   }, [params.listingId]);
   return (
-    <main className="font-bold">
+    <main className="font-semibold">
       {loading && <p className="text-center my-7 text-2xl">Loading.....</p>}
       {error && (
         <p className="text-center text-red-700 my-7 text-2xl">
@@ -91,15 +91,15 @@ const Listing = () => {
               Link copied!
             </p>
           )}
-          <div className="flex flex-col font-bold max-w-4xl mx-auto p-3 my-4 gap-4">
-            <p className="text-2xl font-semibold">
+          <div className="flex flex-col font-bold max-w-4xl mx-auto p-3 my-1 gap-4">
+            <p className="text-2xl font-bold">
               {listing.name} - $
               {listing.offer
                 ? listing.descountPrice.toLocaleString("en-US")
                 : listing.regularPrice.toLocaleString("en-US")}
               {listing.type === "rent" && " / month"}
             </p>
-            <p className="flex items-center mt-6 gap-2 text-slate-600  text-sm">
+            <p className="flex items-center mt-3 gap-2 text-slate-600  text-sm">
               <FaMapMarkerAlt className="text-green-700" />
               {listing.address}
             </p>
