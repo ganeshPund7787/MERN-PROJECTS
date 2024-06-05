@@ -6,4 +6,6 @@
 
 # use swiper for frontend Image slider
 
+# use regax mongoose function for find query
+
 # advanced Authentication with jwt-token
