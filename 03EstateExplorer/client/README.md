@@ -4,4 +4,6 @@
 
 # use redux-persist for store user in local Storage
 
+# use swiper for frontend Image slider
+
 # advanced Authentication with jwt-token

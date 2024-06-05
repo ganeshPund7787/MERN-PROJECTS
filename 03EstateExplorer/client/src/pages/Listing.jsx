@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
+import { useSelector } from "react-redux";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
 import {
@@ -12,6 +13,7 @@ import {
   FaParking,
   FaShare,
 } from "react-icons/fa";
+import Contact from "../components/Contact";
 
 const Listing = () => {
   SwiperCore.use([Navigation]);
@@ -20,6 +22,9 @@ const Listing = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [contact, setContact] = useState(false);
+
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -30,7 +35,7 @@ const Listing = () => {
         if (data.success === false) {
           setError(true);
           setLoading(false);
-          console.log(data);
+
           return;
         }
         setListing(data);
@@ -136,6 +141,16 @@ const Listing = () => {
                 {listing.furnished ? "Furnished " : "UnFurnished"}
               </li>
             </ul>
+            {currentUser && listing.userRef !== currentUser._id && !contact && (
+              <button
+                onClick={() => setContact(true)}
+                type="button"
+                className="bg-orange-500 disabled:cursor-not-allowed text-white rounded-lg uppercase hover:bg-orange-400 p-2"
+              >
+                Contact landlord
+              </button>
+            )}
+            {contact && <Contact listing={listing} />}
           </div>
         </>
       )}
