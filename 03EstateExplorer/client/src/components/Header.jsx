@@ -8,7 +8,7 @@ const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-  console.log(searchTerm);
+
   const handleSubmit = (e) => {
     try {
       e.preventDefault();
@@ -18,7 +18,7 @@ const Header = () => {
       navigate(`/search?${searchQuery}`);
       return;
     } catch (error) {
-      console.log(`Error While seachTerm in Header Frontend: ${error}`);
+      console.log(`Error While seachTerm in Header client side : ${error}`);
     }
   };
 
@@ -26,7 +26,7 @@ const Header = () => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
     if (searchTermFromUrl) {
-      setSearchTerm(searchTermFromUrl);
+      setSearchTerm(searchTermFromUrl || "");
     }
   }, [location.search]);
 
