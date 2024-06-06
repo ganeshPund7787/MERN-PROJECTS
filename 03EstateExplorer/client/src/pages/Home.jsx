@@ -49,7 +49,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="font-semibold">
+    <div className="font-semibold bg-slate-200">
       {/* Top of the web */}
       <div className="flex flex-col gap-6 py-24 px-3 max-w-6xl mx-auto">
         <h1 className="text-orange-700 font-bold text-3xl lg:text-6xl">
@@ -80,13 +80,15 @@ const Home = () => {
           offerListings.length > 0 &&
           offerListings.map((listing) => (
             <SwiperSlide key={listing._id}>
-              <div
-                style={{
-                  background: `url(${listing.imageUrls[0]}) center no-repeat`,
-                  backgroundSize: "cover",
-                }}
-                className="h-[25rem]"
-              ></div>
+              <Link to={`/listing/${listing._id}`}>
+                <div
+                  style={{
+                    background: `url(${listing.imageUrls[0]}) center no-repeat`,
+                    backgroundSize: "cover",
+                  }}
+                  className="h-[25rem]"
+                ></div>
+              </Link>
             </SwiperSlide>
           ))}
       </Swiper>
@@ -96,7 +98,7 @@ const Home = () => {
       <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
         {offerListings && offerListings.length > 0 && (
           <div className="">
-            <div className="">
+            <div className="flex justify-between my-5">
               <h2 className="text-2xl font-bold text-orange-500">
                 Recent offers
               </h2>
@@ -109,7 +111,7 @@ const Home = () => {
               </Link>
             </div>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3">
               {offerListings.map((listing) => (
                 <ListingCard listing={listing} key={listing._id} />
               ))}
@@ -142,7 +144,7 @@ const Home = () => {
 
         {saleListings && saleListings.length > 0 && (
           <div className="">
-            <div className="">
+            <div className="flex justify-between my-5">
               <h2 className="text-2xl font-bold text-orange-500">
                 Recent places for sale
               </h2>
@@ -155,7 +157,7 @@ const Home = () => {
               </Link>
             </div>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3">
               {saleListings.map((listing) => (
                 <ListingCard listing={listing} key={listing._id} />
               ))}

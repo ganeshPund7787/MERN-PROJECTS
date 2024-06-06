@@ -315,7 +315,7 @@ const Profile = () => {
               }`}
             >
               <button type="button" onClick={handleDelete}>
-                delete Profile
+                Delete Profile
               </button>
               <button type="button" onClick={handleLogout}>
                 Log out
@@ -340,7 +340,7 @@ const Profile = () => {
               </h1>
               {userListing.map((listing) => (
                 <div
-                  className="border gap-4 rounded-lg p-2 flex justify-between items-center"
+                  className="border mx-3 md:mx-56 hover:scale-105 shadow-lg gap-4 rounded-lg p-2 flex justify-between items-center"
                   key={listing._id}
                 >
                   <Link to={`/listing/${listing._id}`} key={listing._id}>
@@ -354,7 +354,7 @@ const Profile = () => {
                     className="text-slate-700 font-semibold flex-1 hover:underline truncate"
                     to={`/listing/${listing._id}`}
                   >
-                    <p>{listing.name}</p>
+                    <p className="truncate">{listing.name}</p>
                   </Link>
 
                   <div className="flex gap-8 items-center">

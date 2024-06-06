@@ -27,9 +27,10 @@ const Contact = ({ listing }) => {
     <>
       {landLoard && (
         <div className="flex flex-col gap-2">
-          <p className="font-normal">
-            Contact <span className="font-bold">{landLoard.username} for</span>{" "}
-            <span className="font-bold">{listing.name.toLowerCase()}</span>
+          <p className="font-bold">
+            Contact{" "}
+            <span className="font-semibold">{landLoard.username} for</span>{" "}
+            <span className="font-semibold">{listing.name.toLowerCase()}</span>
           </p>
           <textarea
             value={message}
@@ -40,12 +41,20 @@ const Contact = ({ listing }) => {
             className="w-full border p-3 rounded-lg"
             placeholder="Enter your message here..."
           ></textarea>
-          <Link
-            className="bg-orange-600 text-white text-center p-3 uppercase rounded-lg hover:bg-orange-400"
-            to={`mailto:${landLoard.email}?subject=regarding${listing.name}&body${message}`}
-          >
-            Send Message
-          </Link>
+          <div className="flex justify-evenly my-4">
+            <Link
+              className="bg-orange-600 text-white text-center p-3 uppercase rounded-lg hover:bg-orange-400"
+              to={`mailto:${landLoard.email}?subject=regarding${listing.name}&body${message}`}
+            >
+              Send Message
+            </Link>
+            <Link
+              className="bg-red-600 text-white text-center p-3 uppercase rounded-lg hover:bg-red-400"
+              to={"/"}
+            >
+              cancel
+            </Link>
+          </div>
         </div>
       )}
     </>

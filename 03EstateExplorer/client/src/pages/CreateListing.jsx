@@ -126,6 +126,7 @@ const CreateListing = () => {
       });
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -162,7 +163,7 @@ const CreateListing = () => {
   };
 
   return (
-    <main className="p-3 font-bold">
+    <main className="p-3 font-bold mx-auto max-w-6xl">
       <h1 className="text-center my-7 text-3xl font-bold">Create a Listing</h1>
       <form
         onSubmit={handleSubmit}
@@ -382,14 +383,14 @@ const CreateListing = () => {
 
             <button
               disabled={uploading || loading}
-              className="p-2 bg-orange-500 text-white rounded-lg uppercase hover:bg-orange-300 disabled:cursor-not-allowed"
+              className="p-2 bg-orange-500 mx-8 text-white rounded-lg uppercase hover:bg-orange-400 disabled:cursor-not-allowed"
             >
               {loading ? "Creating...." : `Create listing`}
             </button>
             <Link className="flex" to={"/profile"}>
               <button
                 disabled={uploading || loading}
-                className="p-2 bg-red-600 text-white w-full rounded-lg uppercase hover:bg-red-300 disabled:cursor-not-allowed"
+                className="p-2 bg-red-600 mx-8 text-white w-full rounded-lg uppercase hover:bg-red-400 disabled:cursor-not-allowed"
               >
                 Cancle
               </button>

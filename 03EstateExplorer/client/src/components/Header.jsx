@@ -32,9 +32,9 @@ const Header = () => {
 
   return (
     <header className="bg-orange-500 shadow-md ">
-      <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
+      <div className="flex justify-between items-center max-w-6xl mx-auto py-4 p-3">
         <Link to={"/"}>
-          <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
+          <h1 className="font-bold text-sm sm:text-2xl flex flex-wrap">
             <span className="text-slate-700">estate</span>
             <span className="text-slate-500">Explorer</span>
           </h1>

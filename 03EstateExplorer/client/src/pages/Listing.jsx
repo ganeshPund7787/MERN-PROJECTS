@@ -104,17 +104,21 @@ const Listing = () => {
               {listing.address}
             </p>
             <div className="flex gap-4">
-              <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
+              <p
+                className={`${
+                  listing.type === "rent" ? "bg-orange-500 " : "bg-red-600"
+                }  cursor-pointer w-full max-w-[200px] text-white text-center p-1 rounded-md`}
+              >
                 {listing.type === "rent" ? "For Rent" : "For Sale"}
               </p>
               {listing.offer && (
-                <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
+                <p className="bg-green-900 cursor-pointer w-full max-w-[200px] text-white text-center p-1 rounded-md">
                   ${+listing.regularPrice - +listing.descountPrice} OFF
                 </p>
               )}
             </div>
             <p className="text-slate-800">
-              <span className="font-semibold text-black">Description - </span>
+              <span className="font-bold text-black">Description - </span>
               {listing.desc}
             </p>
             <ul className="flex items-center gap-4 sm:gap-6 text-green-900 font-semibold text-sm flex-wrap">
@@ -145,7 +149,7 @@ const Listing = () => {
               <button
                 onClick={() => setContact(true)}
                 type="button"
-                className="bg-orange-500 disabled:cursor-not-allowed text-white rounded-lg uppercase hover:bg-orange-400 p-2"
+                className="bg-orange-500 font-bold disabled:cursor-not-allowed text-white rounded-lg uppercase hover:bg-orange-400 p-2"
               >
                 Contact landlord
               </button>
