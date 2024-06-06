@@ -15,8 +15,8 @@ const Search = () => {
     sort: "created_at",
     order: "desc",
   });
+  const [showMore, setShowMore] = useState(false);
 
-  console.log(listing);
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
@@ -49,9 +49,16 @@ const Search = () => {
 
     const fetchListings = async (e) => {
       setLoading(true);
+      setShowMore(false);
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
+      if (data.length > 8) {
+        setShowMore(true);
+      } else {
+        setShowMore(false);
+      }
+
       setListings(data);
       setLoading(false);
     };
@@ -91,6 +98,21 @@ const Search = () => {
 
       setSidebarData({ ...sidebarData, sort, order });
     }
+  };
+
+  const onShowMoreClick = async (e) => {
+    const numberOfListings = listing.length;
+    const startIndex = numberOfListings;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("startIndex", startIndex);
+
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json();
+    if (data.length < 9) {
+      setShowMore(false);
+    }
+    setListings([...listing, ...data]);
   };
 
   const handleSubmit = (e) => {
@@ -246,6 +268,15 @@ const Search = () => {
             listing.map((listing) => (
               <ListingCard key={listing._id} listing={listing} />
             ))}
+
+          {showMore && (
+            <button
+              onClick={onShowMoreClick}
+              className="text-green-700 hover:underline p-7 text-center w-full"
+            >
+              Show more
+            </button>
+          )}
         </div>
       </div>
     </div>

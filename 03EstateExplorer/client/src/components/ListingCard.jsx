@@ -22,7 +22,7 @@ const ListingCard = ({ listing }) => {
               {listing.address}
             </p>
           </div>
-          <p className="text-sm text-gray-600 line-clamp-2">{listing.desc}</p>
+          <p className="text-sm text-gray-600 truncate line-clamp-2">{listing.desc}</p>
           <p className="text-orange-300 mt-2 font-bold">
             ${" "}
             {listing.offer
