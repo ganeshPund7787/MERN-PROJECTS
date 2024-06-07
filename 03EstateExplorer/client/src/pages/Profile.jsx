@@ -4,7 +4,6 @@ import { useRef } from "react";
 import {
   getDownloadURL,
   getStorage,
-  list,
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
@@ -17,9 +16,8 @@ import {
   fetchFailure,
   logoutUser,
 } from "../app/features/userSlice";
-import useToast from "../Hooks/useToast.js";
+
 import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
 
 const Profile = () => {
   const { currentUser, isEditable, loading } = useSelector(
@@ -31,7 +29,6 @@ const Profile = () => {
   const [filePer, setFilePer] = useState(0);
   const [uploadFileError, setUploadFileError] = useState(false);
   const [formData, setFormData] = useState({});
-  const { showToast } = useToast();
   const [showListingError, setShowListngError] = useState(false);
   const [userListing, setUserListing] = useState([]);
 
@@ -322,13 +319,15 @@ const Profile = () => {
               </button>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={handleListing}
-            className="text-green-600 mt-8 hover:shadow-lg w-full"
-          >
-            Show listing
-          </button>
+          {userListing.length > -1 && (
+            <button
+              type="button"
+              onClick={handleListing}
+              className="text-green-600 mt-8 hover:shadow-lg w-full"
+            >
+              Show listing
+            </button>
+          )}
           <p className="text-red-600 m-5">
             {showListingError ? `Error Showing Listing...` : ""}
           </p>

@@ -93,10 +93,7 @@ const Listing = () => {
           )}
           <div className="flex flex-col font-bold max-w-4xl mx-auto p-3 my-1 gap-4">
             <p className="text-2xl font-bold">
-              {listing.name} - $
-              {listing.offer
-                ? listing.descountPrice.toLocaleString("en-US")
-                : listing.regularPrice.toLocaleString("en-US")}
+              {listing.name} - ${+listing.regularPrice - +listing.descountPrice}
               {listing.type === "rent" && " / month"}
             </p>
             <p className="flex items-center mt-3 gap-2 text-slate-600  text-sm">
@@ -113,7 +110,11 @@ const Listing = () => {
               </p>
               {listing.offer && (
                 <p className="bg-green-900 cursor-pointer w-full max-w-[200px] text-white text-center p-1 rounded-md">
-                  ${+listing.regularPrice - +listing.descountPrice} OFF
+                  ${" "}
+                  {listing.offer
+                    ? listing.descountPrice.toLocaleString("en-US")
+                    : listing.regularPrice.toLocaleString("en-US")}{" "}
+                  Off
                 </p>
               )}
             </div>
