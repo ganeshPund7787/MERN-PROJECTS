@@ -39,7 +39,6 @@ const Home = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (query.trim() === "") return;
     const res = await fetch(`/api/notes/search?title=${query}`, {
       method: "post",
     });

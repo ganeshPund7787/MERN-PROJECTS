@@ -147,9 +147,10 @@ export const searchNote = async (req, res, next) => {
 
     try {
         const { title } = req.query;
-
         const id = req.user._id;
-        const searchNotes = await Notes.find({ $and: [{ user: id }, { title }] });
+
+        const searchNotes = await Notes.find({ $and: [{ user: id }, { title: { $regex: title, $options: 'i' } }] });
+        console.log(searchNotes);
         res.status(200).json(searchNotes)
     } catch (error) {
         console.log(`Error while search Note : ${error}`)
@@ -166,3 +167,4 @@ export const sortByUpdatedAt = async (req, res, next) => {
         console.log(`Error while sortByUpdate : ${error}`)
     }
 }
+
