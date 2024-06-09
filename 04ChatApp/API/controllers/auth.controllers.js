@@ -1,24 +1,70 @@
+import { User } from "../models/user.models.js";
+import { errorHandler } from "../utils/error.handler.js"
+import bcryptjs from "bcryptjs"
+import jwt from "jsonwebtoken"
+
 export const signUp = async (req, res, next) => {
     try {
-        const { username, email, password } = req.body;
+        const { fullname, username, password, gender } = req.body;
 
-        const isEmailExist = await User.findOne({ email });
+        const isUserExist = await User.findOne({ username });
 
-        if (isEmailExist) return next();
+        if (isUserExist) return next(errorHandler(400, "User already exist"));
+
+        const hashPassword = bcryptjs.hashSync(password, 10);
+
+        const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
+        const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
+
+        await User.create({
+            fullname,
+            username,
+            password: hashPassword,
+            gender,
+            profilePic: gender === 'male' ? boyProfilePic : girlProfilePic
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "User created successfully"
+        })
     } catch (error) {
-        next(error)
+        next(error);
     }
 }
 export const signIn = async (req, res, next) => {
     try {
-        res.json("sign in page")
+        const { username, password } = req.body;
+
+        const isUsernameExist = await User.findOne({ username });
+
+        if (!isUsernameExist) {
+            return next(errorHandler(401, "username is not exist"));
+        }
+
+        const validPassword = bcryptjs.compareSync(password, isUsernameExist.password);
+
+        if (!validPassword) {
+            return next(errorHandler(401, "Invalid Password"))
+        }
+
+        const { password: xyz, ...userData } = isUsernameExist._doc;
+
+        const cookie = jwt.sign({ _id: isUsernameExist._id }, process.env.JWT_SECREATE_KEY);
+        res.cookie("cookie", cookie, {
+            httpOnly: true,
+            maxAge: 10 * 24 * 60 * 60 * 1000
+        }).status(200).json(userData);
     } catch (error) {
-        next(error)
+        next(error);
     }
 }
 export const logout = async (req, res, next) => {
     try {
-        res.json("logout in page")
+        res.clearCookie("cookie").json({
+            success: true,
+            message: "User Logout Successfully"
+        })
     } catch (error) {
         next(error)
     }
