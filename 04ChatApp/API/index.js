@@ -1,7 +1,10 @@
 import express from "express";
 import dotenv from "dotenv"
-import userRoutes from "./routes/auth.router.js"
+
+import authRoutes from "./routes/auth.router.js"
 import messageRoutes from "./routes/message.router.js"
+import usersRoutes from "./routes/user.router.js"
+
 import { mongoConnection } from "./database/data.js";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import cookieParser from "cookie-parser";
@@ -13,8 +16,9 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 
-app.use('/api/auth', userRoutes)
+app.use('/api/auth', authRoutes)
 app.use('/api/messages', messageRoutes)
+app.use('/api/users', usersRoutes)
 
 
 app.use(errorMiddleware);
