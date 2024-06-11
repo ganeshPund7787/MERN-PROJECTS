@@ -16,18 +16,15 @@ export const signUp = async (req, res, next) => {
         const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
         const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
 
-        await User.create({
+        const newUser = await User.create({
             fullname,
             username,
             password: hashPassword,
             gender,
             profilePic: gender === 'male' ? boyProfilePic : girlProfilePic
         });
-
-        res.status(201).json({
-            success: true,
-            message: "User created successfully"
-        })
+        const { password: xyz, ...userData } = newUser._doc;
+        res.status(201).json(userData);
     } catch (error) {
         next(error);
     }

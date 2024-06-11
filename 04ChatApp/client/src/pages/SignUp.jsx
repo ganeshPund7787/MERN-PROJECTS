@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import GenderCheckBox from "../components/GenderCheckBox";
 import { Link } from "react-router-dom";
+import { useSignUp } from "../Hooks/useSignUp.js";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +11,8 @@ const SignUp = () => {
     confirmPassword: "",
     gender: "",
   });
-
+  const { loading, SignUp } = useSignUp();
+  
   const handleCheckBoxCheck = (gender) => {
     setFormData({ ...formData, gender });
   };
