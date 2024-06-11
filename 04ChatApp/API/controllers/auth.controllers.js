@@ -24,7 +24,12 @@ export const signUp = async (req, res, next) => {
             profilePic: gender === 'male' ? boyProfilePic : girlProfilePic
         });
         const { password: xyz, ...userData } = newUser._doc;
-        res.status(201).json(userData);
+        const cookie = jwt.sign({ _id: newUser._id }, process.env.JWT_SECREATE_KEY);
+
+        res.cookie("cookie", cookie, {
+            httpOnly: true,
+            maxAge: 10 * 24 * 60 * 60 * 1000
+        }).status(201).json(userData);
     } catch (error) {
         next(error);
     }
