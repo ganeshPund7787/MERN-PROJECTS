@@ -6,7 +6,7 @@ export const sendMessage = async (req, res, next) => {
         const { message } = req.body;
         const { id: receiverId } = req.params;
         const senderId = req.user._id;
-
+        console.log(message)
         let conversation = await Conversation.findOne({
             partcipants: { $all: [senderId, receiverId] }
         });
