@@ -1,6 +1,10 @@
 import React from "react";
+import { useAuthContex } from "../../context/AuthContext";
+import useConversation from "../../zustand/useConversation";
 
-const Message = () => {
+const Message = ({ message }) => {
+  const { authUser } = useAuthContex();
+  const { selectedConversation } = useConversation();
   return (
     <div className="chat chat-end">
       <div className="chat-image avatar">
