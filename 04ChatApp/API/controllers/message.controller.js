@@ -1,12 +1,13 @@
 import { Conversation } from "../models/conversation.model.js"
 import { Message } from "../models/message.model.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 
 export const sendMessage = async (req, res, next) => {
     try {
         const { message } = req.body;
         const { id: receiverId } = req.params;
         const senderId = req.user._id;
-        console.log(message)
+
         let conversation = await Conversation.findOne({
             partcipants: { $all: [senderId, receiverId] }
         });
@@ -25,7 +26,17 @@ export const sendMessage = async (req, res, next) => {
             conversation.messages.push(newMessage._id);
         }
 
+        // this will run in parallel
         await Promise.all([await newMessage.save(), await conversation.save()]);
+
+        //SOCKET IO FUNCTIONALITY WILL GO HERE
+
+        const receiverSocketId = getReceiverSocketId(receiverId)
+
+        if (receiverSocketId) {
+            // io.to(<socket._id>).emit() used to send events to specific client
+            io.to(receiverSocketId).emit("newMessage", newMessage);
+        }
         res.status(201).json(newMessage);
     } catch (error) {
         console.log(`Error While send Message: ${error}`)
