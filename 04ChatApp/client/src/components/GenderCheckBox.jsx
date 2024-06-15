@@ -9,10 +9,10 @@ const GenderCheckBox = ({ handleCheckBoxCheck, selectedGender }) => {
             selectedGender === "male" ? "selected" : ""
           }`}
         >
-          <span className="label-text">Male</span>
+          <span className="label-text text-cyan-500 ">Male</span>
           <input
             type="checkbox"
-            className="checkbox border-slate-900"
+            className="checkbox checkbox-secondary"
             checked={selectedGender === "male"}
             onChange={() => handleCheckBoxCheck("male")}
           />
@@ -24,10 +24,10 @@ const GenderCheckBox = ({ handleCheckBoxCheck, selectedGender }) => {
             selectedGender === "female" ? "selected" : ""
           }`}
         >
-          <span className="label-text">Female</span>
+          <span className="label-text text-cyan-500 ">Female</span>
           <input
             type="checkbox"
-            className="checkbox border-slate-900"
+            className="checkbox checkbox-success"
             checked={selectedGender === "female"}
             onChange={() => handleCheckBoxCheck("female")}
           />

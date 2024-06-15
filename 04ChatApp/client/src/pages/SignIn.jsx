@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import useLogin from "../Hooks/useLogin";
+import { Button } from "@chakra-ui/react";
 
 const SignIn = () => {
   const [username, setUsername] = useState();
@@ -16,15 +17,13 @@ const SignIn = () => {
     <div className="flex flex-col items-center justify-center min-w-96 mx-auto">
       <div className="w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0">
         <h1 className="text-3xl font-semibold text-center text-gray-300">
-          Login <span className="text-cyan-500">GupShupHub</span>
+          Login <span className="text-cyan-500">ChitChatZone</span>
         </h1>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 mt-10">
           <div className="">
-            <label className="label p-2">
-              <span className="text-base label-text"> Username </span>
-            </label>
             <input
+              required
               type="text"
               placeholder="Enter username"
               value={username}
@@ -34,10 +33,8 @@ const SignIn = () => {
           </div>
 
           <div className="">
-            <label className="label">
-              <span className="text-base label-text"> Password </span>
-            </label>
             <input
+              required
               type="password"
               placeholder="Enter password"
               value={password}
@@ -48,19 +45,23 @@ const SignIn = () => {
 
           <Link
             to={"/signup"}
-            className="text-sm hover:underline hover:text-cyan-600 mt-2 inline-block"
+            className="text-sm hover:underline font-bold hover:text-cyan-600 mt-2 inline-block"
           >
             Dont Have An Account ?
           </Link>
 
           <div className="">
-            <button disabled={loading} className="btn btn-block btn-sm mt-2">
+            <Button
+              disabled={loading}
+              type="submit"
+              className="btn btn-block btn-sm mt-2"
+            >
               {loading ? (
                 <span className="text-red-600 loading loading-spinner"></span>
               ) : (
                 "Login"
               )}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

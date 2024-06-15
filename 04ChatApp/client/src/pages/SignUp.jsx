@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import GenderCheckBox from "../components/GenderCheckBox";
 import { Link } from "react-router-dom";
 import { useSignUp } from "../Hooks/useSignUp.js";
+import { Button } from "@chakra-ui/react";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -25,15 +26,13 @@ const SignUp = () => {
     <div className="flex flex-col items-center justify-center min-w-96 mx-auto">
       <div className="w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0">
         <h1 className="text-3xl font-semibold text-center text-gray-300">
-          Sign Up <span className="text-cyan-500 ">GupShupHub</span>
+          Sign Up <span className="text-cyan-500 ">ChitChatZone</span>
         </h1>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3 mt-5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 mt-14">
           <div className="">
-            <label className="label p-2">
-              <span className="text-base label-text"> Fullname </span>
-            </label>
             <input
+              autoFocus
               type="text"
               placeholder="Enter fullname"
               value={formData.fullname}
@@ -45,9 +44,6 @@ const SignUp = () => {
             />
           </div>
           <div className="">
-            <label className="label p-2">
-              <span className="text-base label-text"> Username </span>
-            </label>
             <input
               type="text"
               placeholder="Enter username"
@@ -61,9 +57,6 @@ const SignUp = () => {
           </div>
 
           <div className="">
-            <label className="label">
-              <span className="text-base label-text"> Password </span>
-            </label>
             <input
               type="password"
               placeholder="Enter password"
@@ -77,9 +70,6 @@ const SignUp = () => {
           </div>
 
           <div className="">
-            <label className="label">
-              <span className="text-base label-text"> Confirm Password </span>
-            </label>
             <input
               type="password"
               placeholder="Enter confirm password"
@@ -102,14 +92,15 @@ const SignUp = () => {
 
           <Link
             to={"/login"}
-            className="text-sm hover:underline hover:text-cyan-600 inline-block"
+            className="text-sm hover:underline font-bold hover:text-cyan-600 inline-block"
           >
             Have An Account ?
           </Link>
 
           <div className="">
-            <button
+            <Button
               disabled={loading}
+              type="submit"
               className="btn btn-block btn-sm p-2 mt-2"
             >
               {loading ? (
@@ -117,7 +108,7 @@ const SignUp = () => {
               ) : (
                 "Sign Up"
               )}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
