@@ -105,7 +105,6 @@ export const toggleComplete = async (req, res, next) => {
 export const multipleDelete = async (req, res, next) => {
     try {
         const { deleteArr } = req.body;
-        console.log(deleteArr)
 
         if (!Array.isArray(deleteArr) || deleteArr.length === 0) {
             return res.status(400).json({ message: 'Invalid request, array of ids required' });
@@ -149,8 +148,14 @@ export const searchNote = async (req, res, next) => {
         const { title } = req.query;
         const id = req.user._id;
 
-        const searchNotes = await Notes.find({ $and: [{ user: id }, { title: { $regex: title, $options: 'i' } }] });
-        console.log(searchNotes);
+        const searchNotes =
+            await Notes.find({
+                $and: [{ user: id },
+                {
+                    title: { $regex: title, $options: 'i' }
+                }]
+            });
+
         res.status(200).json(searchNotes)
     } catch (error) {
         console.log(`Error while search Note : ${error}`)
@@ -161,8 +166,10 @@ export const searchNote = async (req, res, next) => {
 
 export const sortByUpdatedAt = async (req, res, next) => {
     try {
+
         const sortNote = await Notes.find({ user: req.user._id }).sort({ updatedAt: -1 })
         res.status(200).json(sortNote);
+        
     } catch (error) {
         console.log(`Error while sortByUpdate : ${error}`)
     }
