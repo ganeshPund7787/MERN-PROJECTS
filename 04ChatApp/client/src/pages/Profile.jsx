@@ -32,10 +32,10 @@ const Profile = () => {
     e.preventDefault();
     if (imageUrl) {
       setUserData((prevData) => ({ ...prevData, profilePic: imageUrl }));
-      // console.log("imageUrl", imageUrl);
+      console.log("imageUrl", imageUrl);
     }
     console.log(`first`, userData);
-    // await updateUser(userData);
+    await updateUser(userData);
     setImageUrl("");
   };
 

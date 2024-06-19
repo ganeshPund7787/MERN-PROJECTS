@@ -10,7 +10,7 @@ const useUpdateUser = () => {
 
     const updateUser = async (userData, imageUrl = "") => {
         try {
-            // const res = await fetch(`/api/users/user-update/${authUser._id}`);
+            const res = await fetch(`/api/users/user-update/${authUser._id}`);
             console.log(userData, imageUrl)
         } catch (error) {
             toast.error(error.message)
