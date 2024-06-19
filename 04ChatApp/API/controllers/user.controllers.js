@@ -9,4 +9,13 @@ export const getUserForSidebar = async (req, res, next) => {
         console.log(`Error while get Side Bar usrs : ${error.message}`)
         next(error);
     }
-} 
+}
+
+export const updateUser = async () => {
+    try {
+        console.log(req.body)
+        console.log(req.params)
+    } catch (error) {
+        next(error)
+    }
+}
